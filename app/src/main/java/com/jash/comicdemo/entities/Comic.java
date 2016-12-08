@@ -100,12 +100,12 @@ public class Comic {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(context, ComicInfoActivity.class);
         intent.putExtra("comicId", id);
-//        ItemHomeBinding binding = DataBindingUtil.getBinding(view);
-//        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, binding.comicIcon, "comic_icon");
-//
-//        Bundle bundle = options.toBundle();
-//        ContextCompat.startActivity(context, intent, bundle);
-        context.startActivity(intent);
+        ItemHomeBinding binding = DataBindingUtil.getBinding(view);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, binding.comicIcon, "comic_icon");
+
+        Bundle bundle = options.toBundle();
+        ContextCompat.startActivity(context, intent, bundle);
+//        context.startActivity(intent);
     }
 
     public long getId() {
