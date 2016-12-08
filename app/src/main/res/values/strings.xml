@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ComicDemo</string>
+    <string name="update_time">Update Time: %s</string>
+</resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="comic"
+            type="com.jash.comicdemo.entities.Comic"/>
+        <import type="android.net.Uri"/>
+    </data>
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:cardCornerRadius="5dp"
+        app:contentPadding="5dp"
+        android:layout_margin="5dp"
+        android:onClick="@{ comic::click }"
+        android:foreground="?attr/selectableItemBackground">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/comic_icon"
+                android:transitionName="comic_icon"
+                app:aspectRatio="@{ comic.aspectRatio }"
+                app:imageURI="@{ Uri.parse( comic.img ?? ``) }"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:gravity="center_horizontal"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="@{ comic.text }"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{ @string/update_time(comic.updateString) }"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</layout>
