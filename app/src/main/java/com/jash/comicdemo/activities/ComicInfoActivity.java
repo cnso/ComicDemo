@@ -36,6 +36,7 @@ public class ComicInfoActivity extends AppCompatActivity {
     private Subscription comic_subscribe;
     private Comic comic;
     private CommentAdapter<Chapter> adapter;
+    private Subscription chapter_subscribe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class ComicInfoActivity extends AppCompatActivity {
         adapter = new CommentAdapter<>(this, chapters, R.layout.item_chapter, BR.chapter);
         binding.infoList.setAdapter(adapter);
         binding.infoSwipe.setOnRefreshListener(this::loadComic);
-        application.getSubject().ofType(Chapter.class)
+        chapter_subscribe = application.getSubject().ofType(Chapter.class)
                 .onBackpressureBuffer()
                 .filter(chapter -> chapter.getComicId() == comic.getId())
                 .filter(chapter -> !adapter.contains(chapter))
@@ -106,6 +107,9 @@ public class ComicInfoActivity extends AppCompatActivity {
         super.onDestroy();
         if (!comic_subscribe.isUnsubscribed()) {
             comic_subscribe.unsubscribe();
+        }
+        if (!chapter_subscribe.isUnsubscribed()) {
+            chapter_subscribe.unsubscribe();
         }
     }
 }

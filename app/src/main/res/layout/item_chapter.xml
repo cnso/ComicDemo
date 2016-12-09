@@ -12,6 +12,8 @@
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:onClick="@{ v -> chapter.showPicture(v.context) }"
+        android:foreground="?attr/selectableItemBackground"
         >
         <TextView
             android:layout_width="match_parent"

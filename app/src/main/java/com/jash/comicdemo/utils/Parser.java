@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.jash.comicdemo.entities.Chapter;
 import com.jash.comicdemo.entities.Comic;
+import com.jash.comicdemo.entities.ComicDao;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,16 +32,23 @@ public class Parser {
         return null;
     }
 
-    public static Comic parseComicFromList(Element ele) {
-        Comic comic = new Comic();
+    public static Comic parseComicFromList(Element ele, ComicDao dao) {
         String url = ele.select("a").first().attr("href");
         Matcher matcher = Pattern.compile("\\d+").matcher(url);
+        long id = 0;
         if (matcher.find()) {
-            comic.setId(Long.parseLong(matcher.group()));
+            id = Long.parseLong(matcher.group());
+        }
+        Comic comic = dao.load(id);
+        if (comic == null) {
+            comic = new Comic();
+            comic.setId(id);
         }
         String text = ele.select("a:eq(1)").text();
         if (text.contains("[")) {
             text = text.substring(0, text.lastIndexOf('['));
+        } else {
+            text = text.substring(0, text.length() - 4);
         }
         comic.setTitle(text);
         Element img = ele.select("a > img").first();

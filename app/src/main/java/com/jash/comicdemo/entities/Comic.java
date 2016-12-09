@@ -120,7 +120,11 @@ public class Comic {
         this.updateTime = updateTime;
     }
     public String getUpdateString() {
-        return SDF.format(updateTime);
+        String ret = "未知";
+        if (updateTime != null) {
+            ret = SDF.format(updateTime);
+        }
+        return ret;
     }
 
     @Override

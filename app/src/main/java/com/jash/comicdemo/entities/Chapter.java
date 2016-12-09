@@ -1,5 +1,7 @@
 package com.jash.comicdemo.entities;
 
+import android.content.Context;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -49,4 +51,7 @@ public class Chapter {
 
     }
 
+    public void showPicture(Context context) {
+
+    }
 }
