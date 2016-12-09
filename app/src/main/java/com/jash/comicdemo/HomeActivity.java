@@ -45,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         subscribe = application.getSubject()
                 .ofType(Comic.class)
+                .filter(comic -> !adapter.contains(comic))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(adapter::add, Throwable::printStackTrace);
         binding.homeSwipe.setOnRefreshListener(this::refresh);
@@ -66,6 +67,7 @@ public class HomeActivity extends AppCompatActivity {
                 .doOnNext(application.getSubject()::onNext)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(comic -> {}, throwable -> {
+                    binding.homeSwipe.setRefreshing(false);
                     throwable.printStackTrace();
                     Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                 }, () -> binding.homeSwipe.setRefreshing(false));

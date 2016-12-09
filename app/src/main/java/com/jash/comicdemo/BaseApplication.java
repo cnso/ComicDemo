@@ -5,6 +5,7 @@ import android.transition.ChangeBounds;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.jash.comicdemo.entities.Chapter;
 import com.jash.comicdemo.entities.Comic;
 import com.jash.comicdemo.entities.DaoMaster;
 import com.jash.comicdemo.entities.DaoSession;
@@ -38,6 +39,10 @@ public class BaseApplication extends Application {
                 .onBackpressureBuffer()
                 .observeOn(Schedulers.io())
                 .subscribe(session.getComicDao()::insertOrReplace, Throwable::printStackTrace);
+        subject.ofType(Chapter.class)
+                .onBackpressureBuffer()
+                .observeOn(Schedulers.io())
+                .subscribe(session.getChapterDao()::insertOrReplace, Throwable::printStackTrace);
     }
 
     public ComicService getService() {

@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">ComicDemo</string>
     <string name="update_time">更新时间: %s</string>
+    <string name="comic_status">状态: %s</string>
 </resources>

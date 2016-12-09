@@ -12,6 +12,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptSupportModeEnabled true
+        renderscriptTargetApi 25
     }
     dataBinding {
         enabled true
@@ -39,8 +41,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:percent:25.0.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'org.jsoup:jsoup:1.10.1'
     compile 'com.android.support:design:25.0.1'
@@ -50,4 +53,5 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'org.greenrobot:greendao:3.2.0'
+    compile 'com.android.support:gridlayout-v7:25.0.1'
 }
