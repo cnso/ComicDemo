@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +64,11 @@ public class CommentAdapter<T> extends RecyclerView.Adapter<CommentAdapter.ViewH
     }
     public boolean contains(T t) {
         return data.contains(t);
+    }
+    public void add(T t, Comparator<T> comparator) {
+        data.add(t);
+        Collections.sort(data, comparator);
+        notifyItemInserted(data.indexOf(t));
     }
     public void add(T t) {
         add(data.size(), t);

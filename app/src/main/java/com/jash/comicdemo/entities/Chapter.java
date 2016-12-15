@@ -1,6 +1,9 @@
 package com.jash.comicdemo.entities;
 
 import android.content.Context;
+import android.content.Intent;
+
+import com.jash.comicdemo.activities.PictureActivity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -12,11 +15,13 @@ public class Chapter {
     private long id;
     private long comicId;
     private String name;
-    @Generated(hash = 543331016)
-    public Chapter(long id, long comicId, String name) {
+    private int picCount;
+    @Generated(hash = 1832262859)
+    public Chapter(long id, long comicId, String name, int picCount) {
         this.id = id;
         this.comicId = comicId;
         this.name = name;
+        this.picCount = picCount;
     }
     @Generated(hash = 393170288)
     public Chapter() {
@@ -52,6 +57,14 @@ public class Chapter {
     }
 
     public void showPicture(Context context) {
-
+        Intent intent = new Intent(context, PictureActivity.class);
+        intent.putExtra("chapterId", id);
+        context.startActivity(intent);
+    }
+    public int getPicCount() {
+        return this.picCount;
+    }
+    public void setPicCount(int picCount) {
+        this.picCount = picCount;
     }
 }

@@ -9,6 +9,7 @@ import com.jash.comicdemo.entities.Chapter;
 import com.jash.comicdemo.entities.Comic;
 import com.jash.comicdemo.entities.DaoMaster;
 import com.jash.comicdemo.entities.DaoSession;
+import com.jash.comicdemo.entities.Picture;
 import com.jash.comicdemo.utils.ComicService;
 
 import retrofit2.Retrofit;
@@ -43,6 +44,10 @@ public class BaseApplication extends Application {
                 .onBackpressureBuffer()
                 .observeOn(Schedulers.io())
                 .subscribe(session.getChapterDao()::insertOrReplace, Throwable::printStackTrace);
+        subject.ofType(Picture.class)
+                .onBackpressureBuffer()
+                .observeOn(Schedulers.io())
+                .subscribe(session.getPictureDao()::insertOrReplace, Throwable::printStackTrace);
     }
 
     public ComicService getService() {

@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ComicInfoActivity" />
-        <activity android:name=".activities.SearchActivity"></activity>
+        <activity android:name=".activities.SearchActivity" />
+        <activity android:name=".activities.PictureActivity"></activity>
     </application>
 
 </manifest>
