@@ -21,6 +21,7 @@ import com.jash.comicdemo.entities.Picture;
 import rx.subjects.Subject;
 
 public class Bindings {
+
     @BindingAdapter(value = {"imageBlurURI", "blurRadius"}, requireAll = false)
     public static void imageBlurURI(DraweeView view, String uri, float radius) {
         radius = Math.max(radius, 0f);
@@ -33,6 +34,7 @@ public class Bindings {
                 .build();
         view.setController(controller);
     }
+
     @BindingAdapter("hasProgress")
     public static void hasProgress(GenericDraweeView view, boolean flag) {
         GenericDraweeHierarchy hierarchy = view.getHierarchy();
@@ -42,24 +44,4 @@ public class Bindings {
             hierarchy.setProgressBarImage(null);
         }
     }
-//    @BindingAdapter(value = {"imageURI", "picture"}, requireAll = false)
-//    public static void loadImage(DraweeView view, String uri, Picture picture) {
-//        Subject<Object, Object> subject = ((BaseApplication) view.getContext().getApplicationContext()).getSubject();
-//        AbstractDraweeController controller = Fresco.newDraweeControllerBuilder()
-//                .setUri(uri)
-//                .setControllerListener(new BaseControllerListener<ImageInfo>(){
-//                    @Override
-//                    public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-//                        if (picture != null && imageInfo.getQualityInfo().isOfFullQuality()) {
-//                            picture.setWidth(imageInfo.getWidth());
-//                            picture.setHeight(imageInfo.getHeight());
-//                            picture.getAspect().set((float)imageInfo.getWidth() / imageInfo.getHeight());
-//                            subject.onNext(picture);
-//                        }
-//                    }
-//                })
-//                .setOldController(view.getController())
-//                .build();
-//        view.setController(controller);
-//    }
 }

@@ -134,7 +134,6 @@ public class PictureActivity extends AppCompatActivity {
 
                         @Override
                         protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                            Log.d("111", "onFailureImpl: " + pic.getUrl());
                         }
                     }, CallerThreadExecutor.getInstance());
         } else {
