@@ -25,9 +25,11 @@ import com.jash.comicdemo.entities.Chapter;
 import com.jash.comicdemo.entities.Picture;
 import com.jash.comicdemo.entities.PictureDao;
 import com.jash.comicdemo.utils.CommentAdapter;
+import com.jash.comicdemo.utils.CustomScaleType;
 import com.jash.comicdemo.utils.Parser;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Response;
@@ -42,6 +44,14 @@ public class PictureActivity extends AppCompatActivity {
     private CommentAdapter<Picture> adapter;
     private Subscription subscribe;
     private List<DataSource<?>> sources = new ArrayList<>();
+    private Comparator<Picture> comparator = (p1, p2) -> {
+        int i = (int) (p1.getId() - p2.getId());
+        if (i == 0) {
+            i = p1.getScaleType() == CustomScaleType.CLIP_START ? -1 : 1;
+        }
+        return i;
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +139,10 @@ public class PictureActivity extends AppCompatActivity {
                             pic.setWidth(bitmap.getWidth());
                             pic.setHeight(bitmap.getHeight());
                             pic.getAspect().set((float) bitmap.getWidth() / bitmap.getHeight());
+                            if (pic.getAspect().get() > 1) {
+                                adapter.remove(pic);
+                                application.getSubject().onNext(pic);
+                            }
                             application.getSession().getPictureDao().insertOrReplace(pic);
                         }
 
@@ -139,6 +153,15 @@ public class PictureActivity extends AppCompatActivity {
         } else {
             sources.add(Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(pic.getUrl()), null));
         }
-        adapter.add(pic, (p1, p2) -> (int) (p1.getId() - p2.getId()));
+        if (pic.getAspect().get() > 1) {
+            Picture clone = pic.clone();
+            pic.setScaleType(CustomScaleType.CLIP_START);
+            clone.setScaleType(CustomScaleType.CLIP_END);
+            adapter.add(pic, comparator);
+            adapter.add(clone, comparator);
+
+        } else {
+            adapter.add(pic, comparator);
+        }
     }
 }

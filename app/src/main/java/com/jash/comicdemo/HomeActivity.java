@@ -103,7 +103,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra("keyword", query);
+        intent.putExtra("keyword", "金田一");
         startActivity(intent);
         MenuItemCompat.collapseActionView(item);
         return true;

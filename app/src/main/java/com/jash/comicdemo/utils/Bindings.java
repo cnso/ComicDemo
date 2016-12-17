@@ -9,6 +9,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.DraweeView;
 import com.facebook.drawee.view.GenericDraweeView;
@@ -42,6 +43,15 @@ public class Bindings {
             hierarchy.setProgressBarImage(new ProgressBarDrawable());
         } else {
             hierarchy.setProgressBarImage(null);
+        }
+    }
+
+    @BindingAdapter("actualImageScaleType")
+    public static void setScaleType(GenericDraweeView view, ScalingUtils.ScaleType scaleType) {
+        if (scaleType != null) {
+            view.getHierarchy().setActualImageScaleType(scaleType);
+        } else {
+            view.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
         }
     }
 }

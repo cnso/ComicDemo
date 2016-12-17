@@ -2,6 +2,8 @@ package com.jash.comicdemo.entities;
 
 import android.databinding.ObservableFloat;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -9,13 +11,15 @@ import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Transient;
 
 @Entity
-public class Picture {
+public class Picture  implements Cloneable {
     @Id
     private long id;
     private long chapterId;
     private String url;
     private int width;
     private int height;
+    @Transient
+    private ScalingUtils.ScaleType scaleType;
     @Transient
     private ObservableFloat aspect = new ObservableFloat(1);
     @Generated(hash = 490436120)
@@ -71,6 +75,14 @@ public class Picture {
         this.chapterId = chapterId;
     }
 
+    public ScalingUtils.ScaleType getScaleType() {
+        return scaleType;
+    }
+
+    public void setScaleType(ScalingUtils.ScaleType scaleType) {
+        this.scaleType = scaleType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,12 +90,25 @@ public class Picture {
 
         Picture picture = (Picture) o;
 
-        return id == picture.id;
+        if (id != picture.id) return false;
+        return scaleType != null ? scaleType.equals(picture.scaleType) : picture.scaleType == null;
 
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (scaleType != null ? scaleType.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public Picture clone() {
+        try {
+            return (Picture) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

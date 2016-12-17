@@ -9,8 +9,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:actualImageScaleType="@{ pic.scaleType }"
         app:failureImage="@mipmap/ic_launcher"
         app:hasProgress="@{ true }"
-        app:aspectRatio="@{ pic.aspect }"
+        app:aspectRatio="@{ pic.aspect / (pic.scaleType == null ? 1 : 2)}"
         app:imageURI="@{ pic.url }" />
 </layout>

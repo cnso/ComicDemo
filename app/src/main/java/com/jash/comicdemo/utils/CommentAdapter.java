@@ -6,7 +6,6 @@ import android.databinding.ViewDataBinding;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Collection;
@@ -77,6 +76,13 @@ public class CommentAdapter<T> extends RecyclerView.Adapter<CommentAdapter.ViewH
     public void add(int position, T t) {
         data.add(position, t);
         notifyItemInserted(position);
+    }
+    public void remove(T t) {
+        int i = data.indexOf(t);
+        if (i > 0) {
+            data.remove(t);
+            notifyItemRemoved(i);
+        }
     }
 
     public void addAll(Collection<? extends T> collection) {
