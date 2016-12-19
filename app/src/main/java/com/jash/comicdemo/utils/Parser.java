@@ -140,6 +140,10 @@ public class Parser {
                         list.add(Pair.create(i + 1, String.format(Locale.getDefault(), url, tag)));
                     }
                 }
+            } else {
+                for (int i = 0; i < chapter.getPicCount(); i++) {
+                    list.add(Pair.create(i + 1, null));
+                }
             }
         }
         return list;

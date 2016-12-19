@@ -4,4 +4,5 @@
     <string name="update_time">更新时间: %s</string>
     <string name="comic_status">状态: %s</string>
     <string name="loading">加载中...</string>
+    <string name="chapter_title" formatted="false">%s(%d/%d)</string>
 </resources>

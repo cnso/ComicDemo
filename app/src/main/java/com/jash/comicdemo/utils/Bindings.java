@@ -2,8 +2,14 @@ package com.jash.comicdemo.utils;
 
 import android.app.Application;
 import android.databinding.BindingAdapter;
+import android.databinding.BindingMethod;
+import android.databinding.InverseBindingAdapter;
+import android.databinding.InverseBindingListener;
+import android.databinding.InverseBindingMethod;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeController;
@@ -22,7 +28,7 @@ import com.jash.comicdemo.entities.Picture;
 import rx.subjects.Subject;
 
 public class Bindings {
-
+    public static final String TAG = Bindings.class.getSimpleName();
     @BindingAdapter(value = {"imageBlurURI", "blurRadius"}, requireAll = false)
     public static void imageBlurURI(DraweeView view, String uri, float radius) {
         radius = Math.max(radius, 0f);
@@ -52,6 +58,32 @@ public class Bindings {
             view.getHierarchy().setActualImageScaleType(scaleType);
         } else {
             view.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+        }
+    }
+
+    @InverseBindingAdapter(attribute = "topPosition")
+    public static int getRecyclerTopPosition(RecyclerView view) {
+        return view.getChildAdapterPosition(view.getChildAt(0));
+    }
+
+    @BindingAdapter("topPositionAttrChanged")
+    public static void setListener(RecyclerView view, final InverseBindingListener listener) {
+        view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                Log.d(TAG, "onScrolled: " + dy);
+                if (dy != 0) {
+                    listener.onChange();
+                }
+            }
+        });
+    }
+
+    @BindingAdapter("topPosition")
+    public static void setTopPosition(RecyclerView view, int topPosition) {
+        Log.d(TAG, "setTopPosition: " + topPosition);
+        if (view.getChildAdapterPosition(view.getChildAt(0)) != topPosition) {
+            view.scrollToPosition(topPosition);
         }
     }
 }

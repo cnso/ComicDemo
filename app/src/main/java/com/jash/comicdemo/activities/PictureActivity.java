@@ -13,6 +13,7 @@ import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.common.Priority;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -71,17 +72,21 @@ public class PictureActivity extends AppCompatActivity {
                 .subscribe(this::addPicture, Throwable::printStackTrace);
         subscribe = application.getSubject()
                 .ofType(Picture.class)
-                .filter(pic -> !adapter.contains(pic))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::addPicture);
         if (chapter.getPicCount() == 0 || adapter.getItemCount() < chapter.getPicCount()) {
             application.getService().getPicture(chapter.getComicId(), chapter.getId())
                     .map(Parser::parse)
                     .map(doc -> doc.select("td[valign]").first())
-                    .map(ele -> Parser.parsePicture(ele, chapter))
+                    .map(ele -> {
+                        List<Pair<Integer, String>> pairs = Parser.parsePicture(ele, chapter);
+                        application.getSubject().onNext(chapter);
+                        binding.setChapter(chapter);
+                        return pairs;
+                    })
                     .flatMap(Observable::from)
                     .filter(pair -> application.getSession().getPictureDao().load(chapter.getId() << 10 | pair.first) == null)
-                    .flatMap(pair -> Observable.concat(application.getService().tryPicture(pair.second).map(Response::code), Observable.just(pair)).toList())
+                    .flatMap(pair -> Observable.concat(pair.second == null ? Observable.just(0) : application.getService().tryPicture(pair.second).map(Response::code), Observable.just(pair)).toList())
                     .map(list -> Pair.create((int)list.get(0), (Pair<Integer, String>)list.get(1)))
                     .flatMap(pair -> {
                         if (pair.first == 200) {
@@ -102,6 +107,7 @@ public class PictureActivity extends AppCompatActivity {
                     .subscribe(pic ->{}, Throwable::printStackTrace);
         }
         binding.pictureList.setAdapter(adapter);
+        binding.setChapter(chapter);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -127,11 +133,15 @@ public class PictureActivity extends AppCompatActivity {
                 source.close();
             }
         }
+        application.getSubject().onNext(chapter);
     }
     private void addPicture(Picture pic) {
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(pic.getUrl()))
+                .setRequestPriority(Priority.LOW)
+                .build();
         if (pic.getWidth() == 0) {
             DataSource<CloseableReference<CloseableImage>> source = Fresco.getImagePipeline()
-                    .fetchDecodedImage(ImageRequest.fromUri(pic.getUrl()), null);
+                    .fetchDecodedImage(request, null);
             sources.add(source);
             source.subscribe(new BaseBitmapDataSubscriber() {
                         @Override
@@ -139,11 +149,7 @@ public class PictureActivity extends AppCompatActivity {
                             pic.setWidth(bitmap.getWidth());
                             pic.setHeight(bitmap.getHeight());
                             pic.getAspect().set((float) bitmap.getWidth() / bitmap.getHeight());
-                            if (pic.getAspect().get() > 1) {
-                                adapter.remove(pic);
-                                application.getSubject().onNext(pic);
-                            }
-                            application.getSession().getPictureDao().insertOrReplace(pic);
+                            application.getSubject().onNext(pic);
                         }
 
                         @Override
@@ -151,17 +157,19 @@ public class PictureActivity extends AppCompatActivity {
                         }
                     }, CallerThreadExecutor.getInstance());
         } else {
-            sources.add(Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(pic.getUrl()), null));
+            sources.add(Fresco.getImagePipeline().prefetchToDiskCache(request, null));
         }
         if (pic.getAspect().get() > 1) {
+            adapter.remove(pic);
             Picture clone = pic.clone();
             pic.setScaleType(CustomScaleType.CLIP_START);
             clone.setScaleType(CustomScaleType.CLIP_END);
             adapter.add(pic, comparator);
             adapter.add(clone, comparator);
-
         } else {
-            adapter.add(pic, comparator);
+            if (!adapter.contains(pic)) {
+                adapter.add(pic, comparator);
+            }
         }
     }
 }

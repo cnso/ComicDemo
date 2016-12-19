@@ -2,6 +2,7 @@ package com.jash.comicdemo;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.databinding.ObservableByte;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowCompat;
@@ -103,7 +104,8 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra("keyword", "金田一");
+        intent.putExtra("keyword", "火影");
+//        intent.putExtra("keyword", query);
         startActivity(intent);
         MenuItemCompat.collapseActionView(item);
         return true;

@@ -2,9 +2,12 @@ package com.jash.comicdemo.entities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.ObservableInt;
 
 import com.jash.comicdemo.activities.PictureActivity;
+import com.jash.comicdemo.utils.ObservableIntConvert;
 
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -16,12 +19,16 @@ public class Chapter {
     private long comicId;
     private String name;
     private int picCount;
-    @Generated(hash = 1832262859)
-    public Chapter(long id, long comicId, String name, int picCount) {
+    @Convert(converter = ObservableIntConvert.class, columnType = Integer.class)
+    private ObservableInt lastPosition = new ObservableInt(0);
+    @Generated(hash = 1082531298)
+    public Chapter(long id, long comicId, String name, int picCount,
+            ObservableInt lastPosition) {
         this.id = id;
         this.comicId = comicId;
         this.name = name;
         this.picCount = picCount;
+        this.lastPosition = lastPosition;
     }
     @Generated(hash = 393170288)
     public Chapter() {
@@ -66,5 +73,11 @@ public class Chapter {
     }
     public void setPicCount(int picCount) {
         this.picCount = picCount;
+    }
+    public ObservableInt getLastPosition() {
+        return this.lastPosition;
+    }
+    public void setLastPosition(ObservableInt lastPosition) {
+        this.lastPosition = lastPosition;
     }
 }
