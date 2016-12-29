@@ -79,7 +79,7 @@ public class CommentAdapter<T> extends RecyclerView.Adapter<CommentAdapter.ViewH
     }
     public void remove(T t) {
         int i = data.indexOf(t);
-        if (i > 0) {
+        if (i >= 0) {
             data.remove(t);
             notifyItemRemoved(i);
         }

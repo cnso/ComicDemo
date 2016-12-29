@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.facebook.common.executors.CallerThreadExecutor;

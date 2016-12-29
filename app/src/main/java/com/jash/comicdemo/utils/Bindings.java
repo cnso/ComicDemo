@@ -1,31 +1,21 @@
 package com.jash.comicdemo.utils;
 
-import android.app.Application;
 import android.databinding.BindingAdapter;
-import android.databinding.BindingMethod;
 import android.databinding.InverseBindingAdapter;
 import android.databinding.InverseBindingListener;
-import android.databinding.InverseBindingMethod;
-import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeController;
-import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.DraweeView;
 import com.facebook.drawee.view.GenericDraweeView;
-import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.jash.comicdemo.BaseApplication;
-import com.jash.comicdemo.entities.Picture;
-
-import rx.subjects.Subject;
 
 public class Bindings {
     public static final String TAG = Bindings.class.getSimpleName();
@@ -81,7 +71,6 @@ public class Bindings {
 
     @BindingAdapter("topPosition")
     public static void setTopPosition(RecyclerView view, int topPosition) {
-        Log.d(TAG, "setTopPosition: " + topPosition);
         if (view.getChildAdapterPosition(view.getChildAt(0)) != topPosition) {
             view.scrollToPosition(topPosition);
         }
