@@ -3,7 +3,6 @@ package com.jash.comicdemo.entities;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.ObservableInt;
-
 import com.jash.comicdemo.activities.PictureActivity;
 import com.jash.comicdemo.utils.ObservableIntConvert;
 

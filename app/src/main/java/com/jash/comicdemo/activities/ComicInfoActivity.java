@@ -1,5 +1,6 @@
 package com.jash.comicdemo.activities;
 
+import android.content.ContentUris;
 import android.databinding.DataBindingUtil;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.text.TextUtilsCompat;
@@ -45,7 +46,10 @@ public class ComicInfoActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_comic_info);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        long comicId = getIntent().getLongExtra("comicId", 0);
+        long comicId = getIntent().getLongExtra("comicId", -1);
+        if (comicId == -1) {
+            comicId = ContentUris.parseId(getIntent().getData());
+        }
         comic = application.getSession().getComicDao().load(comicId);
         binding.setComic(comic);
         comic_subscribe = application.getSubject()

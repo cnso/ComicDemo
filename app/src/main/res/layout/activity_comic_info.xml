@@ -46,6 +46,7 @@
                             app:layout_rowSpan="4"
                             android:layout_marginRight="15dp"
                             android:transitionName="comic_icon"
+                            android:onClick="@{ v -> comic.createShortcut(v.context) }"
                             app:aspectRatio="@{ comic.aspectRatio }"
                             app:imageURI="@{ comic.img }"/>
                         <TextView

@@ -1,15 +1,30 @@
 package com.jash.comicdemo.entities;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.binaryresource.ByteArrayBinaryResource;
+import com.facebook.binaryresource.FileBinaryResource;
+import com.facebook.cache.common.CacheKey;
+import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
+import com.facebook.imagepipeline.core.ImagePipelineFactory;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.jash.comicdemo.R;
 import com.jash.comicdemo.activities.ComicInfoActivity;
 import com.jash.comicdemo.databinding.ItemHomeBinding;
 
@@ -18,7 +33,11 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -37,6 +56,8 @@ public class Comic {
     private Date updateTime;
     private String info;
     private static final SimpleDateFormat SDF = new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+    private static final Uri COMIC_URI = Uri.parse("comic://org.jash.comic");
+
 
 
     @Generated(hash = 1711210716)
@@ -104,6 +125,22 @@ public class Comic {
 //        context.startActivity(intent);
     }
 
+    public void createShortcut(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutManager manager = (ShortcutManager) context.getSystemService(Context.SHORTCUT_SERVICE);
+            ImageRequest request = ImageRequest.fromUri(img);
+            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(request, null);
+            FileBinaryResource resource = (FileBinaryResource) ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
+            Bitmap icon = BitmapFactory.decodeFile(resource.getFile().getAbsolutePath());
+            ShortcutInfo info = new ShortcutInfo.Builder(context, String.valueOf(id))
+                    .setIntent(new Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(COMIC_URI, id)))
+                    .setIcon(Icon.createWithBitmap(icon))
+                    .setShortLabel(title)
+                    .build();
+            manager.addDynamicShortcuts(Collections.singletonList(info));
+            Toast.makeText(context, "长按Icon看看", Toast.LENGTH_SHORT).show();
+        }
+    }
     public long getId() {
         return id;
     }

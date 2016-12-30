@@ -18,9 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ComicInfoActivity" />
+        <activity android:name=".activities.ComicInfoActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="comic"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.SearchActivity" />
-        <activity android:name=".activities.PictureActivity"></activity>
+        <activity android:name=".activities.PictureActivity"/>
     </application>
 
 </manifest>

@@ -1,21 +1,17 @@
 package com.jash.comicdemo;
 
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.databinding.DataBindingUtil;
-import android.databinding.ObservableByte;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.WindowCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.view.DraweeTransition;
 import com.jash.comicdemo.activities.SearchActivity;
 import com.jash.comicdemo.databinding.HomeBinding;
 import com.jash.comicdemo.entities.Comic;
@@ -28,7 +24,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class HomeActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -79,8 +74,6 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
                     throwable.printStackTrace();
                     Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                 }, () -> binding.homeSwipe.setRefreshing(false));
-
-
     }
 
     @Override
@@ -104,8 +97,8 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra("keyword", "火影");
-//        intent.putExtra("keyword", query);
+//        intent.putExtra("keyword", "火影");
+        intent.putExtra("keyword", query);
         startActivity(intent);
         MenuItemCompat.collapseActionView(item);
         return true;
