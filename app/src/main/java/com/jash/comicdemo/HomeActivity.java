@@ -20,6 +20,7 @@ import com.jash.comicdemo.utils.CommentAdapter;
 import com.jash.comicdemo.utils.Parser;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import rx.Observable;
 import rx.Subscription;
