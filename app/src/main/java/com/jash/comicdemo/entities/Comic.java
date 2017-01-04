@@ -138,6 +138,11 @@ public class Comic {
                     .setIcon(Icon.createWithBitmap(icon))
                     .setShortLabel(title)
                     .build();
+            List<ShortcutInfo> infos = manager.getDynamicShortcuts();
+//            manager.setDynamicShortcuts(new ArrayList<>());
+            if (infos.size() >= manager.getMaxShortcutCountPerActivity() - 1) {
+                manager.removeDynamicShortcuts(Collections.singletonList(infos.get(0).getId()));
+            }
             manager.addDynamicShortcuts(Collections.singletonList(info));
             Toast.makeText(context, "长按Icon看看", Toast.LENGTH_SHORT).show();
         }
