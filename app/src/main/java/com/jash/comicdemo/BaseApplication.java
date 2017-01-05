@@ -1,7 +1,9 @@
 package com.jash.comicdemo;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 import android.transition.ChangeBounds;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -24,7 +26,9 @@ public class BaseApplication extends Application {
     private ComicService service;
     private DaoSession session;
     private Subject<Object, Object> subject;
-
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+    }
     @Override
     public void onCreate() {
         super.onCreate();

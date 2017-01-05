@@ -1,8 +1,6 @@
 package com.jash.comicdemo;
 
 import android.content.Intent;
-import android.content.pm.ShortcutInfo;
-import android.content.pm.ShortcutManager;
 import android.databinding.DataBindingUtil;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
