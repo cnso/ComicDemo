@@ -61,7 +61,6 @@ public class Bindings {
         view.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                Log.d(TAG, "onScrolled: " + dy);
                 if (dy != 0) {
                     listener.onChange();
                 }

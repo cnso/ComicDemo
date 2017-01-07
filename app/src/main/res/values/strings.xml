@@ -4,4 +4,5 @@
     <string name="comic_status">Status: %s</string>
     <string name="loading">loading…</string>
     <string name="chapter_title" formatted="false">%s(%d/%d)</string>
+    <string name="night_mode">Night Mode</string>
 </resources>

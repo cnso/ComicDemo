@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +19,6 @@ import com.jash.comicdemo.utils.CommentAdapter;
 import com.jash.comicdemo.utils.Parser;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import rx.Observable;
 import rx.Subscription;
@@ -31,6 +31,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     private HomeBinding binding;
     private CommentAdapter<Comic> adapter;
     private MenuItem item;
+    private boolean isNight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,9 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
                 .orderDesc(ComicDao.Properties.UpdateTime)
                 .limit(24)
                 .list();
+        if (savedInstanceState != null) {
+            isNight = savedInstanceState.getInt("appcompat:local_night_mode") == AppCompatDelegate.MODE_NIGHT_YES;
+        }
         adapter = new CommentAdapter<>(this, list, R.layout.item_home, BR.comic);
         setSupportActionBar(binding.toolbar);
         subscribe = application.getSubject()
@@ -82,6 +86,22 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         SearchView search = (SearchView) MenuItemCompat.getActionView(item);
         search.setSubmitButtonEnabled(true);
         search.setOnQueryTextListener(this);
+        menu.findItem(R.id.night_mode).setChecked(isNight);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.night_mode:
+                item.setChecked(!item.isChecked());
+                if (item.isChecked()) {
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                } else {
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+                break;
+        }
         return true;
     }
 

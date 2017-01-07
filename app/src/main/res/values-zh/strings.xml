@@ -5,4 +5,5 @@
     <string name="comic_status">状态: %s</string>
     <string name="loading">加载中...</string>
     <string name="chapter_title" formatted="false">%s(%d/%d)</string>
+    <string name="night_mode">夜间模式</string>
 </resources>

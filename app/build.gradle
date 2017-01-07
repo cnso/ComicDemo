@@ -54,4 +54,5 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.android.support:gridlayout-v7:25.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 }
