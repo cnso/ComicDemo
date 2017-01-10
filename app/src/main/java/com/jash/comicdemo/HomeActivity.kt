@@ -16,7 +16,6 @@ import com.jash.comicdemo.databinding.HomeBinding
 import com.jash.comicdemo.entities.Comic
 import com.jash.comicdemo.entities.ComicDao
 import com.jash.comicdemo.utils.CommentAdapter
-import com.jash.comicdemo.utils.Parser
 
 import rx.Observable
 import rx.Subscription
@@ -105,7 +104,8 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         val intent = Intent(this, SearchActivity::class.java)
-                intent.putExtra("keyword", "火影")
+//        intent.putExtra("keyword", "金田一")
+        intent.putExtra("keyword", query)
         startActivity(intent)
         MenuItemCompat.collapseActionView(item)
         return true

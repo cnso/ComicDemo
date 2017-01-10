@@ -15,17 +15,11 @@ import com.jash.comicdemo.R
 import com.jash.comicdemo.databinding.SearchBinding
 import com.jash.comicdemo.entities.Comic
 import com.jash.comicdemo.utils.CommentAdapter
-import com.jash.comicdemo.utils.Parser
 
-import org.jsoup.nodes.Element
-
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
 import java.util.ArrayList
 
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 class SearchActivity : AppCompatActivity() {
     private var adapter: CommentAdapter<Comic>? = null
@@ -49,7 +43,6 @@ class SearchActivity : AppCompatActivity() {
                 .searchComic(1, keyword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
-
                     if (it.code != 200) {
                         binding!!.loading.text = it.message
                     } else {

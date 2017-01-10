@@ -20,10 +20,6 @@ import com.jash.comicdemo.entities.Chapter
 import com.jash.comicdemo.entities.ChapterDao
 import com.jash.comicdemo.entities.Comic
 import com.jash.comicdemo.utils.CommentAdapter
-import com.jash.comicdemo.utils.Parser
-
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 
 import rx.Observable
 import rx.Subscription

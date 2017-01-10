@@ -5,6 +5,7 @@ import android.databinding.ObservableInt
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.view.MenuItem
 
 import com.facebook.datasource.DataSource
@@ -68,12 +69,15 @@ class PictureActivity : AppCompatActivity() {
     }
 
     private fun loadPicture() {
+        if (subscribe!!.isUnsubscribed) {
+            return
+        }
         application!!.service!!.getPicture(binding!!.chapter!!.comicId, binding!!.chapter!!.id, pictures!!.size + 1, 6)
                 .map { it.data }
                 .doOnNext { application!!.subject!!.onNext(it) }
-                .flatMap({ Observable.from(it.pictures) })
+                .flatMap { Observable.from(it.pictures) }
                 .onBackpressureBuffer()
-                .doOnNext({ application!!.subject!!.onNext(it) })
+                .doOnNext { application!!.subject!!.onNext(it) }
                 .subscribe({ }, {
                     loadPicture()
                     it.printStackTrace()
