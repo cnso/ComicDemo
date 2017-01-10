@@ -69,9 +69,15 @@ public class Bindings {
     }
 
     @BindingAdapter("topPosition")
-    public static void setTopPosition(RecyclerView view, int topPosition) {
+    public static void setTopPosition(final RecyclerView view, final int topPosition) {
         if (view.getChildAdapterPosition(view.getChildAt(0)) != topPosition) {
-            view.scrollToPosition(topPosition);
+            System.out.println("view = [" + view.getAdapter().getItemCount() + "], topPosition = [" + topPosition + "]");
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    view.scrollToPosition(topPosition);
+                }
+            });
         }
     }
 }

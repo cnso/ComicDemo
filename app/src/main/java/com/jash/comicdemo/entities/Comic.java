@@ -25,6 +25,7 @@ import com.facebook.cache.common.CacheKey;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.google.gson.annotations.SerializedName;
 import com.jash.comicdemo.R;
 import com.jash.comicdemo.activities.ComicInfoActivity;
 import com.jash.comicdemo.databinding.ItemHomeBinding;
@@ -32,6 +33,9 @@ import com.jash.comicdemo.databinding.ItemHomeBinding;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,15 +51,27 @@ import java.util.Locale;
 @Entity
 public class Comic {
     @Id
+    @SerializedName("id")
     private long id;
+    @SerializedName("name")
     private String title;
+    @SerializedName("img")
     private String img;
+    @SerializedName("width")
     private int width;
+    @SerializedName("height")
     private int height;
+    @SerializedName("author")
     private String author;
+    @SerializedName("status")
     private String status;
+    @SerializedName("updated")
     private Date updateTime;
+    @SerializedName("info")
     private String info;
+    @SerializedName("chapters")
+    @Transient
+    private List<Chapter> chapters;
     private static final SimpleDateFormat SDF = new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
     private static final Uri COMIC_URI = Uri.parse("comic://org.jash.comic");
 
@@ -203,5 +219,13 @@ public class Comic {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<Chapter> getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(List<Chapter> chapters) {
+        this.chapters = chapters;
     }
 }

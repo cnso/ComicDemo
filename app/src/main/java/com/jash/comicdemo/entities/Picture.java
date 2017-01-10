@@ -3,6 +3,7 @@ package com.jash.comicdemo.entities;
 import android.databinding.ObservableFloat;
 
 import com.facebook.drawee.drawable.ScalingUtils;
+import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -12,15 +13,18 @@ import org.greenrobot.greendao.annotation.Transient;
 @Entity
 public class Picture  implements Cloneable {
     @Id
+    @SerializedName("id")
     private long id;
+    @SerializedName("chapterId")
     private long chapterId;
+    @SerializedName("img")
     private String url;
+    @SerializedName("width")
     private int width;
+    @SerializedName("height")
     private int height;
     @Transient
     private ScalingUtils.ScaleType scaleType;
-    @Transient
-    private ObservableFloat aspect = new ObservableFloat(1);
     @Generated(hash = 490436120)
     public Picture(long id, long chapterId, String url, int width, int height) {
         this.id = id;
@@ -57,16 +61,10 @@ public class Picture  implements Cloneable {
         this.height = height;
     }
 
-    public ObservableFloat getAspect() {
-        if (width != 0 && aspect.get() == 1) {
-            aspect.set((float) width / height);
-        }
-        return aspect;
+    public float getAspect() {
+        return (float) width / height;
     }
 
-    public void setAspect(ObservableFloat aspect) {
-        this.aspect = aspect;
-    }
     public long getChapterId() {
         return this.chapterId;
     }

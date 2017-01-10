@@ -29,6 +29,7 @@ public class Parser {
 
     public static Document parse(ResponseBody body) {
         try {
+            String string = body.string();
             return Jsoup.parse(body.byteStream(), "GBK", "");
         } catch (IOException e) {
             e.printStackTrace();
@@ -142,7 +143,7 @@ public class Parser {
                 }
             } else {
                 for (int i = 0; i < chapter.getPicCount(); i++) {
-                    list.add(Pair.create(i + 1, null));
+                    list.add(Pair.create(i + 1, (String) null));
                 }
             }
         }

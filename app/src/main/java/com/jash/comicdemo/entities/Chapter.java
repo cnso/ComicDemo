@@ -3,6 +3,9 @@ package com.jash.comicdemo.entities;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.ObservableInt;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.jash.comicdemo.activities.PictureActivity;
 import com.jash.comicdemo.utils.ObservableIntConvert;
 
@@ -10,16 +13,27 @@ import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Transient;
+
+import java.util.List;
 
 @Entity
 public class Chapter {
     @Id
+    @SerializedName("id")
     private long id;
+    @SerializedName("comicId")
     private long comicId;
+    @SerializedName("name")
     private String name;
+    @SerializedName("total")
     private int picCount;
     @Convert(converter = ObservableIntConvert.class, columnType = Integer.class)
+    @Expose(serialize = false, deserialize = false)
     private ObservableInt lastPosition = new ObservableInt(0);
+    @Transient
+    @SerializedName("pagers")
+    private List<Picture> pictures;
     @Generated(hash = 1082531298)
     public Chapter(long id, long comicId, String name, int picCount,
             ObservableInt lastPosition) {
@@ -78,5 +92,13 @@ public class Chapter {
     }
     public void setLastPosition(ObservableInt lastPosition) {
         this.lastPosition = lastPosition;
+    }
+
+    public List<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<Picture> pictures) {
+        this.pictures = pictures;
     }
 }

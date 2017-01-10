@@ -4,6 +4,11 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.jash.comicdemo.entities.Comic;
+import com.jash.comicdemo.entities.ComicDao;
+import com.jash.comicdemo.entities.DaoMaster;
+import com.jash.comicdemo.entities.DaoSession;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

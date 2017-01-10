@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 25
@@ -19,11 +19,6 @@ android {
         enabled true
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -34,6 +29,10 @@ android {
 
 greendao {
     schemaVersion 4
+}
+
+kapt {
+    generateStubs = true
 }
 
 dependencies {
@@ -55,4 +54,6 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.android.support:gridlayout-v7:25.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    kapt 'com.android.databinding:compiler:2.2.3'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.6'
 }
