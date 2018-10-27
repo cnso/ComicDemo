@@ -16,15 +16,16 @@ import com.jash.comicdemo.databinding.HomeBinding
 import com.jash.comicdemo.entities.Comic
 import com.jash.comicdemo.entities.ComicDao
 import com.jash.comicdemo.utils.CommentAdapter
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import org.reactivestreams.Subscription
 
-import rx.Observable
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 
 class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     private var application: BaseApplication? = null
-    private var subscribe: Subscription? = null
+    private lateinit var subscribe:Disposable
     private var binding: HomeBinding? = null
     private var adapter: CommentAdapter<Comic>? = null
     private var item: MenuItem? = null
@@ -48,7 +49,7 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 .filter { comic -> !adapter!!.contains(comic) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ adapter!!.add(it) }, { it.printStackTrace() })
-        binding!!.homeSwipe.setOnRefreshListener( { this.refresh() })
+        binding!!.homeSwipe.setOnRefreshListener { this.refresh() }
         binding!!.homeGrid.adapter = adapter
         if (adapter!!.itemCount == 0) {
             binding!!.homeSwipe.isRefreshing = true
@@ -58,13 +59,13 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     private fun refresh() {
         adapter!!.clear()
-        application!!.service!!
+        val b = application!!.service!!
                 .home
-                .map({ it.data })
-                .flatMap( { Observable.from(it) })
-                .doOnNext({ application!!.subject!!.onNext(it) })
+                .map { it.data }
+                .flatMap { Observable.fromIterable(it) }
+                .doOnNext { application!!.subject!!.onNext(it) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ comic -> }, { throwable ->
+                .subscribe({ }, { throwable ->
                     binding!!.homeSwipe.isRefreshing = false
                     throwable.printStackTrace()
                     Toast.makeText(this, throwable.message, Toast.LENGTH_SHORT).show()
@@ -73,16 +74,16 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        item = menu!!.findItem(R.id.search)
-        val search = MenuItemCompat.getActionView(item) as SearchView
+        item = menu?.findItem(R.id.search)
+        val search = item?.actionView as SearchView
         search.isSubmitButtonEnabled = true
         search.setOnQueryTextListener(this)
-        menu.findItem(R.id.night_mode).isChecked = isNight
+        menu?.findItem(R.id.night_mode)?.isChecked = isNight
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        when (item?.itemId) {
             R.id.night_mode -> {
                 item.isChecked = !item.isChecked
                 if (item.isChecked) {
@@ -97,8 +98,8 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!subscribe!!.isUnsubscribed) {
-            subscribe!!.unsubscribe()
+        if (!subscribe.isDisposed) {
+            subscribe.dispose()
         }
     }
 

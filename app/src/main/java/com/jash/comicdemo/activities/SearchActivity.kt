@@ -15,11 +15,11 @@ import com.jash.comicdemo.R
 import com.jash.comicdemo.databinding.SearchBinding
 import com.jash.comicdemo.entities.Comic
 import com.jash.comicdemo.utils.CommentAdapter
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 import java.util.ArrayList
 
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
 
 class SearchActivity : AppCompatActivity() {
     private var adapter: CommentAdapter<Comic>? = null
@@ -39,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
         this.keyword = extra
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        application!!.service!!
+        val b = application!!.service!!
                 .searchComic(1, keyword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
@@ -49,9 +49,9 @@ class SearchActivity : AppCompatActivity() {
                         binding!!.loading.visibility = View.GONE
                     }
                 }
-                .flatMap({ Observable.from(it.data) })
-                .doOnNext({ application!!.subject!!.onNext(it) })
-                .filter({ comic -> !adapter!!.contains(comic) })
+                .flatMap { Observable.fromIterable(it.data) }
+                .doOnNext { application!!.subject!!.onNext(it) }
+                .filter { comic -> !adapter!!.contains(comic) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ adapter!!.add(it) }, { throwable ->
                     throwable.printStackTrace()

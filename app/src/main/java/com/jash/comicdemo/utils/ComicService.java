@@ -7,11 +7,9 @@ import com.jash.comicdemo.entities.Response;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
-import rx.Observable;
 
 public interface ComicService {
     @GET("comic_home/")

@@ -21,18 +21,17 @@ import com.jash.comicdemo.entities.Picture
 import com.jash.comicdemo.entities.PictureDao
 import com.jash.comicdemo.utils.CommentAdapter
 import com.jash.comicdemo.utils.CustomScaleType
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 
 import java.util.ArrayList
-
-import rx.Observable
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 
 class PictureActivity : AppCompatActivity() {
     private var binding: PictureBinding? = null
     private var application: BaseApplication? = null
     private var adapter: CommentAdapter<Picture>? = null
-    private var subscribe: Subscription? = null
+    private lateinit var subscribe: Disposable
     private val sources = ArrayList<DataSource<*>>()
     private var pictures: MutableList<Picture>? = null
     private val count = ObservableInt(0);
@@ -56,12 +55,13 @@ class PictureActivity : AppCompatActivity() {
         pictures!!.forEach { this.addPicture(it) }
         subscribe = application!!.subject!!
                 .ofType(Picture::class.java)
+                .filter { it.chapterId == chapterId }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.addPicture(it) })
+                .subscribe { this.addPicture(it) }
         binding!!.pictureList.adapter = adapter
         binding!!.chapter = chapter
         binding!!.count = count
-        if (chapter!!.picCount == 0 || pictures!!.size < chapter.picCount) {
+        if (chapter!!.picCount == 0 || pictures!!.size < chapter.picCount - 1) {
             loadPicture()
         }
         setSupportActionBar(binding!!.toolbar)
@@ -69,19 +69,18 @@ class PictureActivity : AppCompatActivity() {
     }
 
     private fun loadPicture() {
-        if (subscribe!!.isUnsubscribed) {
+        if (subscribe.isDisposed) {
             return
         }
-        application!!.service!!.getPicture(binding!!.chapter!!.comicId, binding!!.chapter!!.id, pictures!!.size + 1, 6)
+        val b = application!!.service!!.getPicture(binding!!.chapter!!.comicId, binding!!.chapter!!.id, pictures!!.size + 1, 2)
                 .map { it.data }
                 .doOnNext { application!!.subject!!.onNext(it) }
-                .flatMap { Observable.from(it.pictures) }
-                .onBackpressureBuffer()
+                .flatMap { Observable.fromIterable(it.pictures) }
                 .doOnNext { application!!.subject!!.onNext(it) }
                 .subscribe({ }, {
                     loadPicture()
                     it.printStackTrace()
-                }, { if (pictures!!.size < binding!!.chapter!!.picCount) loadPicture()})
+                }, { if (pictures!!.size < binding!!.chapter!!.picCount - 1) loadPicture()})
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -93,12 +92,12 @@ class PictureActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!subscribe!!.isUnsubscribed) {
-            subscribe!!.unsubscribe()
+        if (!subscribe.isDisposed) {
+            subscribe.dispose()
         }
         sources.filterNot { it.isClosed }
                 .forEach { it.close() }
-        application!!.subject!!.onNext(binding!!.chapter)
+        application!!.subject!!.onNext(binding!!.chapter!!)
     }
 
     private fun addPicture(pic: Picture) {

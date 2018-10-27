@@ -20,18 +20,18 @@ import com.jash.comicdemo.entities.Chapter
 import com.jash.comicdemo.entities.ChapterDao
 import com.jash.comicdemo.entities.Comic
 import com.jash.comicdemo.utils.CommentAdapter
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 
-import rx.Observable
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 
 class ComicInfoActivity : AppCompatActivity() {
     private var binding: InfoBinding? = null
     private var application: BaseApplication? = null
-    private var comic_subscribe: Subscription? = null
+    private lateinit var comic_subscribe: Disposable
     private var comic: Comic? = null
     private var adapter: CommentAdapter<Chapter>? = null
-    private var chapter_subscribe: Subscription? = null
+    private lateinit var chapter_subscribe: Disposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,7 @@ class ComicInfoActivity : AppCompatActivity() {
         comic_subscribe = application!!.subject!!
                 .ofType(Comic::class.java)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ binding!!.comic = it })
+                .subscribe { binding!!.comic = it }
         val chapters = application!!.session!!
                 .chapterDao
                 .queryBuilder()
@@ -56,9 +56,8 @@ class ComicInfoActivity : AppCompatActivity() {
                 .list()
         adapter = CommentAdapter(this, chapters, R.layout.item_chapter, BR.chapter)
         binding!!.infoList.adapter = adapter
-        binding!!.infoSwipe.setOnRefreshListener({ this.loadComic() })
+        binding!!.infoSwipe.setOnRefreshListener { this.loadComic() }
         chapter_subscribe = application!!.subject!!.ofType(Chapter::class.java)
-                .onBackpressureBuffer()
                 .filter { chapter -> chapter.comicId == comic!!.id }
                 .filter { chapter -> !adapter!!.contains(chapter) }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,15 +69,15 @@ class ComicInfoActivity : AppCompatActivity() {
     }
 
     private fun loadComic() {
-        application!!.service!!
+        val a = application!!.service!!
                 .getComic(comic!!.id)
                 .map { it.data }
                 .doOnNext { application!!.subject!!.onNext(it) }
-                .map({ it.chapters })
-                .flatMap({ Observable.from(it) })
-                .doOnNext({ application!!.subject!!.onNext(it) })
+                .map { it.chapters }
+                .flatMap { Observable.fromIterable(it) }
+                .doOnNext { application!!.subject!!.onNext(it) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ chapter -> }, { t ->
+                .subscribe({ }, { t ->
                     binding!!.infoSwipe.isRefreshing = false
                     t.printStackTrace()
                     Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
@@ -94,11 +93,11 @@ class ComicInfoActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!comic_subscribe!!.isUnsubscribed) {
-            comic_subscribe!!.unsubscribe()
+        if (!comic_subscribe.isDisposed) {
+            comic_subscribe.dispose()
         }
-        if (!chapter_subscribe!!.isUnsubscribed) {
-            chapter_subscribe!!.unsubscribe()
+        if (!chapter_subscribe.isDisposed) {
+            chapter_subscribe.dispose()
         }
     }
 }
